@@ -106,3 +106,32 @@ def get_repairscosts(df):
     makes['RepairCost%'] = round(makes['RepairCost'] / makes['RepairCost'].sum() * 100,2)
     makes['RepairCost%total'] = makes['RepairCost%'].cumsum().round(1)
     return makes[['RepairCost%','RepairCost%total','RepairCost']]
+
+def get_model_metrics(names,models):
+    counter = 0
+    for model in models:
+        model.fit(X_train, y_train)
+        y_pred = model.predict(X_test)
+        roc_auc = roc_auc_score(y_test,model.predict_proba(X_test)[:,1])
+        print('{} Model Metrics:'.format(names[counter]))
+        print('ROC_AUC_SCORE: ' + str(round(roc_auc,3)))
+        print('Accuracy: ' + str(round(accuracy_score(y_test,y_pred),3)))
+        print('Precision: '+ str(round(precision_score(y_test,y_pred),3)))
+        print('Recall: ' + str(round(recall_score(y_test,y_pred),3)))
+        print('F1-Score: ' + str(round(f1_score(y_test,y_pred),3)))
+        print('Log Loss Score: ' + str(round(log_loss(y_test,y_pred),3)))
+        print('MCC: ' + str(round(matthews_corrcoef(y_test,y_pred),3)))
+        print("\n")
+        counter +=1
+    fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(15,10))
+    for model, ax in zip(models, axes.flatten()):
+        plot_confusion_matrix(model, 
+                                X_test, 
+                                y_test, 
+                                ax=ax, 
+                                cmap='Blues',
+                                display_labels=['Non-Repeat','Repeat'])
+        ax.title.set_text(type(model).__name__)
+
+    plt.tight_layout()  
+    plt.show()
