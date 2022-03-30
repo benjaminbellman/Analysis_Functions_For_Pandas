@@ -135,3 +135,22 @@ def get_model_metrics(names,models):
 
     plt.tight_layout()  
     plt.show()
+
+
+def compare_regression_models(models):
+    for i in models:
+        model.fit(X_train,y_train)
+        y_pred = model.predict(X_test)
+        errors = abs(np.array(y_test) - y_pred)
+        r2 = round(r2_score(y_test,y_pred),3)
+        MSE = round(mse(y_test,y_pred),3)
+        RMSE = round(mse(y_test, y_pred, squared =False),3)
+        MAE = round(mae(y_test, y_pred),3)
+        print('{} Performance: '.format(model))
+        print('R Squared : ' + str(r2))
+        print('MSE: '+ str(MSE))
+        print('RMSE: ' +str(RMSE))
+        print('MAE: ' +str(MAE))
+        print(('Average Errors: ' + str(np.mean(errors))))
+        print("\n")
+        return RMSE
