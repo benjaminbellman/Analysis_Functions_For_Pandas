@@ -154,3 +154,12 @@ def compare_regression_models(models):
         print(('Average Errors: ' + str(np.mean(errors))))
         print("\n")
         return RMSE
+
+
+def scale_columns(cols_to_scale):
+    '''Input a list of columns to scale'''
+    scaler = StandardScaler()
+    scaler.fit(X[cols_to_scale])
+    X_scaled = scaler.transform(X[cols_to_scale])
+    for ind, col in enumerate(cols_to_scale):
+        X[col] = X_scaled[:,ind]
