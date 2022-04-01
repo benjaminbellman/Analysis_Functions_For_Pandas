@@ -163,3 +163,26 @@ def scale_columns(cols_to_scale):
     X_scaled = scaler.transform(X[cols_to_scale])
     for ind, col in enumerate(cols_to_scale):
         X[col] = X_scaled[:,ind]
+
+def plot_roc_curves(names,models):
+    linestyles =['-',':','--',':','-','--',':','-','-']
+    colors = ['r','m','dodgerblue','g','darkorange','limegreen', 'deeppink','navy','y']
+
+    plt.figure(figsize=(15,10))
+    counter = 0
+    for name,clf in zip(names,models):
+        clf.fit(X_train,y_train)
+        y_proba = clf.predict_proba(X_test)[:,1]
+        fpr, tpr, thresholds = roc_curve(y_test, y_proba)
+        plt.plot(fpr, tpr, label=name+ ' (auc: %0.3f)' %roc_auc_score(y_test, clf.predict_proba(X_test)[:,1],average='macro'),
+             linestyle=linestyles[counter], c=colors[counter])
+        counter += 1
+    lims = [np.min([0.0, 0.0]),  np.max([1.0, 1.0])]
+    plt.plot(lims, lims, 'k-', alpha=0.75, zorder=0, c='black', linestyle ='--')
+
+    plt.xlabel('False positive rate -->', fontsize = 15)
+    plt.ylabel('True positive rate -->', fontsize = 15)
+    plt.title('ROC curve for the different Classification Models', pad =15, fontsize = 25)
+    plt.legend(loc='best')
+    plt.annotate('<--- No skill (0.5)',xy=(0.6,0.55))
+    plt.show()
