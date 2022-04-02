@@ -186,3 +186,31 @@ def plot_roc_curves(names,models):
     plt.legend(loc='best')
     plt.annotate('<--- No skill (0.5)',xy=(0.6,0.55))
     plt.show()
+
+def plot_precision_recall_curve(names,models):
+    '''Function plots the precision-recall curve.'''
+    linestyles =['-',':','--',':','-','--',':','-','-']
+    colors = ['r','m','dodgerblue','g','darkorange','limegreen', 'deeppink','navy','y']
+
+    plt.figure(figsize=(15,10))
+
+    ## Plotting the no-skill line. 
+    no_skill = len(y_test[y_test==1]) / len(y_test)
+    plt.plot([0,1], [no_skill,no_skill], linestyle='--', label='No Skill', c='black')
+
+    counter = 0
+    for name, model in zip(names,models):
+        precision,recall,thresholds = precision_recall_curve(y_test,model.predict_proba(X_test)[:,1])
+        plt.plot(recall,precision,color=colors[counter], 
+                linestyle=linestyles[counter], 
+                label = name  +' AUC: %.3f'%auc(recall,precision))
+        counter +=1
+
+
+    plt.title('Precision Recall Tradeoff', pad=20, fontsize = 20)
+    plt.xlabel('Recall', fontsize = 15)
+    plt.ylabel('Precision', fontsize = 15)
+    plt.annotate('No Skill Line: '+str(round(no_skill,3)),(0.2,0.28), fontsize =10)
+    plt.legend()
+    plt.savefig('precision_recall_4_models.png')
+    plt.show()
