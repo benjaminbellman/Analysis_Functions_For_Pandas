@@ -214,3 +214,44 @@ def plot_precision_recall_curve(names,models):
     plt.legend()
     plt.savefig('precision_recall_4_models.png')
     plt.show()
+
+def random_forest_depth_test(X_train):
+    max_depths = range(1,21)
+    training_error = []
+    for max_depth in max_depths:
+        model_1 = RandomForestRegressor(max_depth = max_depth)
+        model_1.fit(X,y)
+        training_error.append(mse(y_train,model_1.predict(X_train)))
+
+    ## We append the MSEs for each max_depth tested for the testing test.
+    testing_error=[]
+    for max_depth in max_depths:
+        model_2 = RandomForestRegressor(max_depth = max_depth)
+        model_2.fit(X_train,y_train)
+        testing_error.append(mse(y_test,model_2.predict(X_test)))
+
+    ## Since random_state is not always active, we may get a different result each time. 
+    ## Thus, we store the testing error in errors, create an index, and start the index at 1 since we will use this to return
+    ## the x for the MSE (y intercept) which is the lowest for the testing error. 
+
+    errors = list(enumerate(testing_error,1))
+
+    ## We plot the figures. 
+    plt.figure(figsize=((14,8)))
+    plt.plot(max_depths,training_error, c ='b', label='Training Error')
+    plt.plot(max_depths,testing_error, c ='r',label='Testing Error')
+    plt.title("As Tree Depth increases, both MSE's decreases but testing's increases after depth " + 
+            str(min(errors, key = lambda t: t[1])[0]), fontsize=20, pad=20)
+
+    ## The axvline changes for each refesh, this code plots a line through the minimum MSE for the testing error.
+    plt.axvline(x=min(errors, key = lambda t: t[1])[0],c='g',marker='3',linestyle='--')
+    plt.annotate('Optimal Depth = ' + str(min(errors, key = lambda t: t[1])[0]),
+                xy=(min(errors, key = lambda t: t[1])[0] + 0.75,14000))
+
+    ## We label the axes and make our graph nice. 
+    plt.xlabel('Tree Depth')
+    plt.ylabel('MSE')
+    plt.xticks(range(0,21))
+    plt.xlim(1,20)
+    plt.legend()
+    plt.show()
