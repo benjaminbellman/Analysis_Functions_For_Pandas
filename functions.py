@@ -255,3 +255,16 @@ def random_forest_depth_test(X_train):
     plt.xlim(1,20)
     plt.legend()
     plt.show()
+
+    def outlier_visual(column, name):
+    plt.figure(figsize=(10, 5))
+    
+    plt.subplot(1, 2, 1)
+    plt.boxplot(column)
+    plt.title('{} Boxplot'.format(name))
+    
+    plt.subplot(1, 2, 2)
+    plt.hist(column)
+    plt.title('{} Histogram'.format(name))
+    
+    plt.show()
