@@ -268,3 +268,14 @@ def random_forest_depth_test(X_train):
     plt.title('{} Histogram'.format(name))
     
     plt.show()
+
+def adfuller_test(df):
+    '''Input a time-series dataframe to test for stationarity'''
+    result = adfuller(df)
+    labels =['ADF Test Stat','p-value','#Lags Used','Number of Observations Used']
+    for value, label in zip (result, labels):
+        print(label + ':' +str(value))
+    if result[1] <= 0.05:
+        print("Strong evidence against the null hypothesis(HO), reject the null hypothesis")
+    else: 
+        print("Weak evidence against null hypothesis, time series has a unit roots, indicating it is not stationary")
