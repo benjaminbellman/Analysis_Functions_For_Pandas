@@ -76,10 +76,36 @@ def get_value_counts(df):
         print('{}{}{}{{}}'.format(column,'\n',df[column].value_counts(),'\n'))
         print('\n')
 
-def convert_bool(df,cols): 
-    ''' Input a dataframe and list of columns. Converts our Should be Boolean Columns to Boolean. 1 indicates yes, 0 is Y or U'''
+def convert_bool(df): 
+    ''' Converts our Should be Boolean Columns to Boolean. 1 indicates yes, 0 is Y or U'''
+    cols = ['TotalLossInd','CollisionROFlagYN','dimDRPFlagYN','PaintFlagYN','TowingFlagYN']
     df[cols] = df[cols].apply(lambda x: np.where(x =='Y',1,0))
 
+
+def get_netamounts(df):
+    '''Get Net Amount Aggregates for each car brand'''
+    makes = df.groupby('VehicleMake').sum().sort_values('NetAmount', ascending=False).round()
+    makes['NetAmount%'] = round(makes['NetAmount'] / makes['NetAmount'].sum() * 100,2)
+    makes['NetAmount%total'] = makes['NetAmount%'].cumsum().round(1)
+    makes['Margins'] = 1 - (makes['RepairCost'] /makes['NetAmount']).round(2)
+    return makes[['NetAmount%','NetAmount%total','NetAmount','Margins']].sort_values('Margins',ascending=False)
+
+
+def shop_aggregates(df):
+    '''Get Net Amounts by Shop'''
+    shops = df.groupby('Shop').sum().sort_values('NetAmount', ascending=False).round()
+    shops['NetAmount%'] = round(shops['NetAmount'] / shops['NetAmount'].sum() * 100,2)
+    shops['NetAmount%total'] = shops['NetAmount%'].cumsum().round(1)
+    shops['Margins'] = 1 - (shops['RepairCost'] /shops['NetAmount']).round(2)
+    return shops[['NetAmount%','NetAmount%total','NetAmount','Margins']]
+
+
+def get_repairscosts(df):
+    '''Function gets the Repair Costs Distribution by Make'''
+    makes = df.groupby('VehicleMake').sum().sort_values('RepairCost', ascending=False).round()
+    makes['RepairCost%'] = round(makes['RepairCost'] / makes['RepairCost'].sum() * 100,2)
+    makes['RepairCost%total'] = makes['RepairCost%'].cumsum().round(1)
+    return makes[['RepairCost%','RepairCost%total','RepairCost']]
 
 def get_model_metrics(names,models):
     counter = 0
@@ -189,7 +215,7 @@ def plot_precision_recall_curve(names,models):
     plt.savefig('precision_recall_4_models.png')
     plt.show()
 
-def random_forest_depth_test(X_train,X_test):
+def random_forest_depth_test(X_train):
     max_depths = range(1,21)
     training_error = []
     for max_depth in max_depths:
@@ -231,7 +257,6 @@ def random_forest_depth_test(X_train,X_test):
     plt.show()
 
 def outlier_visual(column, name):
-    '''Visualizes the outliers in the dataset'''
     plt.figure(figsize=(10, 5))
     plt.subplot(1, 2, 1)
     plt.boxplot(column)
