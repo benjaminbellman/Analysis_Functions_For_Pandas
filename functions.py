@@ -251,3 +251,11 @@ def adfuller_test(df):
         print("Strong evidence against the null hypothesis(HO), reject the null hypothesis")
     else: 
         print("Weak evidence against null hypothesis, time series has a unit roots, indicating it is not stationary")
+        
+def get_dummies(df, dummy_cols, cols_drop): 
+    df.drop(columns=cols_drop, inplace = True)
+    dummies = pd.get_dummies(df[dummy_cols], drop_first = True)
+    df = pd.concat([df,dummies], axis=1)
+    df.drop(columns= dummy_cols, inplace = True)
+    return df 
+    
