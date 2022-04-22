@@ -35,7 +35,6 @@ def preview_data(df):
     print(df.info())
 
 
-
 ## Get percentage of missing values for each column
 def get_missing_counts(df):
     '''Function that retrieves percentage of missing values in each column of the dataframe'''
@@ -131,7 +130,7 @@ def compare_regression_models(models):
 
 
 def scale_columns(cols_to_scale):
-    '''Input a list of columns to scale'''
+    '''Input a list of columns to scale and apply StandardScaler'''
     scaler = StandardScaler()
     scaler.fit(X[cols_to_scale])
     X_scaled = scaler.transform(X[cols_to_scale])
@@ -139,6 +138,7 @@ def scale_columns(cols_to_scale):
         X[col] = X_scaled[:,ind]
 
 def plot_roc_curves(names,models):
+    '''Plots ROC_AUC curves and models. Names should be a list of strings and models should be list of models.'''
     linestyles =['-',':','--',':','-','--',':','-','-']
     colors = ['r','m','dodgerblue','g','darkorange','limegreen', 'deeppink','navy','y']
 
@@ -190,6 +190,7 @@ def plot_precision_recall_curve(names,models):
     plt.show()
 
 def random_forest_depth_test(X_train,X_test):
+    '''Function Returns the difference between the training and testing data.'''
     max_depths = range(1,21)
     training_error = []
     for max_depth in max_depths:
@@ -253,6 +254,7 @@ def adfuller_test(df):
         print("Weak evidence against null hypothesis, time series has a unit roots, indicating it is not stationary")
         
 def get_dummies(df, dummy_cols, cols_drop): 
+    '''Function Gets Dummy Columns for our Data.'''
     df.drop(columns=cols_drop, inplace = True)
     dummies = pd.get_dummies(df[dummy_cols], drop_first = True)
     df = pd.concat([df,dummies], axis=1)
