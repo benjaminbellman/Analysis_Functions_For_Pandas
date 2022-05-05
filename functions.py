@@ -137,7 +137,7 @@ def scale_columns(cols_to_scale):
     for ind, col in enumerate(cols_to_scale):
         X[col] = X_scaled[:,ind]
 
-def plot_roc_curves(names,models):
+def plot_roc_curves(names,models,X_train,y_train,X_test,y_test):
     '''Plots ROC_AUC curves and models. Names should be a list of strings and models should be list of models.'''
     linestyles =['-',':','--',':','-','--',':','-','-']
     colors = ['r','m','dodgerblue','g','darkorange','limegreen', 'deeppink','navy','y']
@@ -161,7 +161,7 @@ def plot_roc_curves(names,models):
     plt.annotate('<--- No skill (0.5)',xy=(0.6,0.55))
     plt.show()
 
-def plot_precision_recall_curve(names,models):
+def plot_precision_recall_curve(names,models,X_test,y_test):
     '''Function plots the precision-recall curve.'''
     linestyles =['-',':','--',':','-','--',':','-','-']
     colors = ['r','m','dodgerblue','g','darkorange','limegreen', 'deeppink','navy','y']
