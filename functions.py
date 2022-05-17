@@ -80,7 +80,7 @@ def convert_bool(df,cols):
     df[cols] = df[cols].apply(lambda x: np.where(x =='Y',1,0))
 
 
-def get_model_metrics(names,models):
+def get_model_metrics(names,models,X_train,X_test,y_train,y_test,roc_curve,roc_auc_score,accuracy_score,precision_score,recall_score,f1_score,log_loss,matthews_corrcoef,plot_confusion_matrix):
     counter = 0
     for model in models:
         model.fit(X_train, y_train)
@@ -137,7 +137,7 @@ def scale_columns(cols_to_scale):
     for ind, col in enumerate(cols_to_scale):
         X[col] = X_scaled[:,ind]
 
-def plot_roc_curves(names,models,X_train,y_train,X_test,y_test,roc_curve,roc_auc_score):
+def plot_roc_curves(names,models,X_train,X_test,y_train,y_test,roc_curve,roc_auc_score):
     '''Plots ROC_AUC curves and models. Names should be a list of strings and models should be list of models.'''
     linestyles =['-',':','--',':','-','--',':','-','-']
     colors = ['r','m','dodgerblue','g','darkorange','limegreen', 'deeppink','navy','y']
